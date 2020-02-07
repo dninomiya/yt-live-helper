@@ -1,72 +1,90 @@
-<mat-toolbar color="primary">
-  <h1>YouTube Live Helper</h1>
-  <span class="spacer"></span>
-  <a href="https://github.com/deerboy/yt-live-helper" target="_blank" mat-button
-    >GitHub</a
-  >
-</mat-toolbar>
-
-<div class="wrap">
-  <div class="editor">
-    <mat-tab-group
-      [disableRipple]="false"
-      (selectedTabChange)="changeType($event)"
-    >
-      <mat-tab label="ティッカー">
-        <div class="body">
-          <app-ticker-form (opt)="updateOption($event)"></app-ticker-form>
-        </div>
-      </mat-tab>
-      <mat-tab label="登録バナー">
-        <div class="body">
-          <mat-form-field>
-            <mat-label>メッセージ</mat-label>
-            <input
-              type="text"
-              matInput
-              [formControl]="bannerControl"
-              autocomplete="off"
-              autofocus
-            />
-          </mat-form-field>
-        </div>
-      </mat-tab>
-    </mat-tab-group>
+<ng-container *ngIf="mode === 'view'; else editor">
+  <div [ngSwitch]="type">
+    <div *ngSwitchCase="'ticker'">
+      <app-ticker [options$]="option$"></app-ticker>
+    </div>
+    <div *ngSwitchCase="'banner'" class="banner">
+      <app-banner [options$]="option$"></app-banner>
+    </div>
   </div>
-  <div class="result">
-    <h2>プレビュー</h2>
+</ng-container>
 
-    <div class="preview">
-      <div [ngSwitch]="type">
-        <div *ngSwitchCase="'ticker'">
-          <app-ticker [options$]="tickerOption$"></app-ticker>
-        </div>
-        <div *ngSwitchCase="'banner'">
-          <app-banner></app-banner>
+<ng-template #editor>
+  <mat-toolbar color="primary">
+    <h1>YouTube Live Helper</h1>
+    <span class="spacer"></span>
+    <a
+      href="https://github.com/deerboy/yt-live-helper"
+      target="_blank"
+      mat-button
+      >GitHub</a
+    >
+  </mat-toolbar>
+
+  <div class="wrap">
+    <div class="editor">
+      <mat-tab-group
+        [disableRipple]="false"
+        (selectedTabChange)="changeType($event)"
+      >
+        <mat-tab label="ティッカー">
+          <div class="body">
+            <app-ticker-form
+              (opt)="setOptions($event, 'ticker')"
+            ></app-ticker-form>
+          </div>
+        </mat-tab>
+        <mat-tab label="登録バナー">
+          <div class="body">
+            <app-banner-form
+              (opt)="setOptions($event, 'banner')"
+            ></app-banner-form>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+    <div class="result">
+      <h2>プレビュー</h2>
+
+      <div class="preview">
+        <div [ngSwitch]="type">
+          <div *ngSwitchCase="'ticker'">
+            <app-ticker [options$]="option$"></app-ticker>
+          </div>
+          <div *ngSwitchCase="'banner'">
+            <app-banner [options$]="option$"></app-banner>
+          </div>
         </div>
       </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>URL</mat-label>
+        <input
+          type="text"
+          matInput
+          autofocus
+          readonly
+          [value]="resultURL"
+          #url
+        />
+        <button
+          [disabled]="!url.value"
+          ngxClipboard
+          [cbContent]="url.value"
+          mat-icon-button
+          matTooltip="コピー"
+          (cbOnSuccess)="openAlert($event)"
+          class="mat-18"
+          matSuffix
+        >
+          <mat-icon>file_copy</mat-icon>
+        </button>
+        <mat-hint>OBSに貼り付けてください</mat-hint>
+      </mat-form-field>
     </div>
-
-    <mat-form-field appearance="outline">
-      <mat-label>URL</mat-label>
-      <input type="text" matInput autofocus readonly #url />
-      <button
-        [disabled]="!url.value"
-        ngxClipboard
-        [cbContent]="url.value"
-        mat-icon-button
-        matTooltip="コピー"
-        (cbOnSuccess)="openAlert($event)"
-        class="mat-18"
-        matSuffix
-      >
-        <mat-icon>file_copy</mat-icon>
-      </button>
-      <mat-hint>OBSに貼り付けてください</mat-hint>
-    </mat-form-field>
   </div>
-</div>
 
-<mat-toolbar>
-  <a href="https://twitter.com/d151005" target="_blank">by Daichi Ninomiya</a>
-</mat-toolbar>
+  <mat-toolbar>
+    <a href="https://twitter.com/d151005" target="_blank">by Daichi Ninomiya</a>
+  </mat-toolbar>
+</ng-template>

@@ -1,8 +1,10 @@
+import { environment } from './../environments/environment';
 import { TickerOptions } from './interfaces/ticker-options';
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatSnackBar, MatTabChangeEvent } from '@angular/material';
 import { Observable, ReplaySubject } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -10,25 +12,37 @@ import { Observable, ReplaySubject } from 'rxjs';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  domain = 'https://deerboy.github.io/yt-live-helper/';
+  domain = environment.production ? 'https://deerboy.github.io/yt-live-helper' : `http://localhost:${location.port}`;
   type: 'ticker' | 'banner' = 'ticker';
-  tickerOptionSource = new ReplaySubject<TickerOptions>();
-  tickerOption$: Observable<TickerOptions> = this.tickerOptionSource.asObservable();
+  options = {};
 
-  tickerControl = new FormControl();
-  bannerControl = new FormControl();
+  optionSource = new ReplaySubject<TickerOptions>();
+  option$ = this.optionSource.asObservable();
+  mode = 'editor';
+
+  resultURL: string;
 
   constructor(
-    private snack: MatSnackBar
-  ) { }
+    private snack: MatSnackBar,
+    private route: ActivatedRoute
+  ) {
+    this.route.queryParamMap.subscribe(map => {
+      const result: any = {};
+      map.keys.forEach(key => {
+        result[key] = map.get(key);
+      });
 
-  get tickerURL(): string {
-    const value = this.tickerControl.value;
-    if (this.tickerControl.value) {
-      return this.domain + '?type=ticker&duration=1000&text=' + value.replace(/\n/gm, ',');
-    } else {
-      return null;
-    }
+      if (result.type) {
+        this.type = result.type;
+
+        if (this.type === 'ticker') {
+          result.tickers = result.tickers.split(',');
+        }
+
+        this.setOptions(result, result.type);
+        this.mode = 'view';
+      }
+    });
   }
 
   openAlert() {
@@ -38,10 +52,26 @@ export class AppComponent {
   }
 
   changeType(event: MatTabChangeEvent) {
-    this.type = event.index ? 'ticker' : 'banner';
+    this.type = event.index ? 'banner' : 'ticker';
+    this.resultURL = null;
+    this.updateOption(this.type);
   }
 
-  updateOption(options) {
-    this.tickerOptionSource.next(options);
+  setOptions(options, type: string) {
+    this.options[type] = options;
+    this.updateOption(this.type);
+  }
+
+  updateOption(type: string) {
+    const options = this.options[type];
+    const params = [];
+
+    Object.keys(options).forEach(key => {
+      params.push(key + '=' + encodeURIComponent(options[key]));
+    });
+    params.push(`type=${this.type}`);
+
+    this.optionSource.next(options);
+    this.resultURL = this.domain + '?' + params.join('&');
   }
 }

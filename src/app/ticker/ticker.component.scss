@@ -18,7 +18,7 @@ $duration: 10s;
 .ticker-wrap {
   overflow: hidden;
   width: 100%;
-  height: 4rem;
+  height: 48px;
   background-color: rgba(#000, 0.9);
   padding-left: 100%;
   box-sizing: content-box;
@@ -30,8 +30,8 @@ $duration: 10s;
 
   .ticker {
     display: inline-block;
-    height: 4rem;
-    line-height: 4rem;
+    height: 48px;
+    line-height: 48px;
     white-space: nowrap;
     padding-right: 100%;
     box-sizing: content-box;
@@ -43,8 +43,8 @@ $duration: 10s;
 
     &__item {
       display: inline-block;
-      padding: 0 2rem;
-      font-size: 2rem;
+      padding: 0 400px;
+      font-size: 24px;
       color: white;
     }
   }

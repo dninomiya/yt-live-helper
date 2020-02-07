@@ -17,7 +17,10 @@ export class TickerComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.options$.subscribe(opts => this.stopTimer(opts));
+    this.options$.subscribe(opts => {
+      this.visible = true;
+      this.stopTimer(opts);
+    });
   }
 
   stopTimer(opts: TickerOptions) {

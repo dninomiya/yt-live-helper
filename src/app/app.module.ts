@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 import {
   MatFormFieldModule,
@@ -19,9 +20,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TickerComponent } from './ticker/ticker.component';
 import { BannerComponent } from './banner/banner.component';
 import { TickerFormComponent } from './ticker-form/ticker-form.component';
+import { BannerFormComponent } from './banner-form/banner-form.component';
 
 @NgModule({
-  declarations: [AppComponent, TickerComponent, BannerComponent, TickerFormComponent],
+  declarations: [AppComponent, TickerComponent, BannerComponent, TickerFormComponent, BannerFormComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -36,6 +38,7 @@ import { TickerFormComponent } from './ticker-form/ticker-form.component';
     FormsModule,
     ReactiveFormsModule,
     MatSnackBarModule,
+    RouterModule.forRoot([])
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,1 +1,7 @@
-<p>banner works!</p>
+<div
+  class="banner"
+  [class.visible]="visible"
+  *ngIf="options$ | async as options"
+>
+  <img [src]="options.url" alt="" />
+</div>
