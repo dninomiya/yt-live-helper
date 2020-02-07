@@ -1,7 +1,7 @@
 export interface TickerOptions {
   tickers: string[];
   color: string;
-  backgroundColor: string;
+  background: string;
   duration: number;
   interval: number;
   speed: number;
