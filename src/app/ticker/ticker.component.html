@@ -1,0 +1,14 @@
+<div class="wrap" *ngIf="options$ | async as options">
+  <div class="ticker-wrap" [class.visible]="visible">
+    <div class="ticker" [style.animation-duration]="options.speed + 's'">
+      <div
+        class="ticker__item"
+        [style.color]="options.color"
+        [style.backgroundColor]="options.backgroundColor"
+        *ngFor="let ticker of options.tickers"
+      >
+        {{ ticker }}
+      </div>
+    </div>
+  </div>
+</div>
